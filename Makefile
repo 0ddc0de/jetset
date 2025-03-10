@@ -1,14 +1,22 @@
-.PHONY: clone pull config_qemu build_qemu virtualenv build_jetset_engine build
+.PHONY: docker-build docker-run clone pull config_qemu build_qemu virtualenv build_jetset_engine build
 
 SHELL := /bin/bash
 ENGINE_BASE := jetset_engine
 ENGINE_SCRIPT := jetset_engine/jetset_server.py
 ACTIVATE_VIRTUALENV := jetset_env/bin/activate
 
+REPO_BASE ?= git@github.com:aerosec
+
+docker-build:
+	docker build -t jetset .
+
+docker-run:
+	docker run -it --rm -v $(shell pwd):/src jetset /bin/bash
+
 clone:
-	git clone git@github.com:aerosec/jetset_qemu.git
-	git clone git@github.com:aerosec/jetset_engine.git
-	git clone git@github.com:aerosec/jetset_public_data.git
+	git clone $(REPO_BASE)/jetset_qemu.git
+	git clone $(REPO_BASE)/jetset_engine.git
+	git clone $(REPO_BASE)/jetset_public_data.git
 
 pull:
 	cd jetset_engine && git pull
@@ -28,6 +36,7 @@ virtualenv:
 
 build_jetset_engine:
 	source jetset_env/bin/activate && \
+	pip install -r jetset_engine/requirements.txt && \
 	pip install -e jetset_engine/archinfo   && \
 	pip install -e jetset_engine/pyvex  && \
 	pip install -e jetset_engine/claripy  && \
