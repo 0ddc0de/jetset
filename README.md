@@ -14,6 +14,26 @@ We also demonstrate how Jetset-assisted rehosting facilitates fuzz-testing, a co
 
 ## Build Jetset
 
+### Build Jetset with Docker
+
+On the host:
+```bash
+make docker-build
+make docker-run # spawns shell inside the container
+```
+
+The container has `pwd` (the repo base) mounted to `/src`, so that you can
+modify files from your host and run Jetset inside the container.
+
+In the container:
+```bash
+export REPO_BASE=https://github.com/0ddc0de # set this to where the jetset_* repos are
+./setup.sh
+. jetset_env/bin/activate
+```
+
+### Build Jetset on Your Host
+
 You first need to install several dependencies:
 
 ```bash
@@ -27,7 +47,7 @@ make clone
 make config_qemu
 make build_qemu
 make virtualenv
-make build_jetset_engine  
+make build_jetset_engine
 ```
 
 ## Run Jetset
